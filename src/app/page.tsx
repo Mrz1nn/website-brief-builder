@@ -1,65 +1,190 @@
-import Image from "next/image";
+"use client";
+
+import { useCallback, useState } from "react";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Header } from "@/components/Header";
+import { ProgressBar } from "@/components/ProgressBar";
+import { StartScreen } from "@/components/StartScreen";
+import { StepRenderer } from "@/components/StepRenderer";
+import { StepShell } from "@/components/StepShell";
+import { SummaryView } from "@/components/SummaryView";
+import { Toast } from "@/components/Toast";
+import { useBriefDraft } from "@/hooks/useBriefDraft";
+import { useTheme } from "@/hooks/useTheme";
+import { useToast } from "@/hooks/useToast";
+import { STEP_META, STEP_ORDER } from "@/lib/options";
+import { createSampleBriefData } from "@/lib/sample-data";
+import type { StepErrors } from "@/lib/validation";
+import { validateStep } from "@/lib/validation";
+import type { StepId } from "@/lib/types";
+
+type Mode = "start" | "wizard" | "summary";
 
 export default function Home() {
+  const { toast, showToast, dismissToast } = useToast();
+  const handleSaveError = useCallback(() => {
+    showToast("Could not save your progress. Your browser storage may be full or blocked.", "danger");
+  }, [showToast]);
+  const { data, setData, stepIndex, setStepIndex, savedDraft, isReady, resumeDraft, startFresh, discardDraft } =
+    useBriefDraft(handleSaveError);
+  const { theme, toggleTheme, isReady: themeReady } = useTheme();
+
+  const [mode, setMode] = useState<Mode>("start");
+  const [furthestIndex, setFurthestIndex] = useState(0);
+  const [errors, setErrors] = useState<StepErrors>({});
+  const [savedJustNow, setSavedJustNow] = useState(false);
+  const [pendingNewBrief, setPendingNewBrief] = useState(false);
+  const [pendingClearDraft, setPendingClearDraft] = useState(false);
+
+  if (!isReady || !themeReady) {
+    return null;
+  }
+
+  const hasSavedProgress = Boolean(savedDraft);
+  const currentStep: StepId = STEP_ORDER[stepIndex];
+
+  function goToWizardStep(index: number) {
+    setErrors({});
+    setStepIndex(index);
+    setFurthestIndex((prev) => Math.max(prev, index));
+    setMode("wizard");
+  }
+
+  function handleStartNew() {
+    if (hasSavedProgress) {
+      setPendingNewBrief(true);
+      return;
+    }
+    startFresh();
+    goToWizardStep(0);
+  }
+
+  function confirmStartNew() {
+    startFresh();
+    setPendingNewBrief(false);
+    goToWizardStep(0);
+  }
+
+  function handleResume() {
+    resumeDraft();
+    const draftStepIndex = savedDraft?.stepIndex ?? 0;
+    setErrors({});
+    setStepIndex(draftStepIndex);
+    setFurthestIndex(draftStepIndex);
+    setMode("wizard");
+  }
+
+  function handleLoadSample() {
+    startFresh(createSampleBriefData());
+    setFurthestIndex(STEP_ORDER.length - 1);
+    setMode("wizard");
+  }
+
+  function handleContinue() {
+    const stepErrors = validateStep(currentStep, data);
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors(stepErrors);
+      return;
+    }
+    setErrors({});
+    if (stepIndex === STEP_ORDER.length - 1) {
+      setMode("summary");
+      return;
+    }
+    const nextIndex = stepIndex + 1;
+    setStepIndex(nextIndex);
+    setFurthestIndex((prev) => Math.max(prev, nextIndex));
+  }
+
+  function handleBack() {
+    setErrors({});
+    setStepIndex(Math.max(0, stepIndex - 1));
+  }
+
+  function handleSaveDraft() {
+    setSavedJustNow(true);
+    showToast("Draft saved to this browser.");
+    setTimeout(() => setSavedJustNow(false), 1600);
+  }
+
+  function handleClearDraft() {
+    setPendingClearDraft(true);
+  }
+
+  function confirmClearDraft() {
+    discardDraft();
+    setPendingClearDraft(false);
+    showToast("Saved draft cleared.");
+  }
+
+  function handleEditStep(step: StepId) {
+    goToWizardStep(STEP_ORDER.indexOf(step));
+  }
+
+  function handleNewFromSummary() {
+    setPendingNewBrief(true);
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <>
+      <Header theme={theme} onToggleTheme={toggleTheme} />
+
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-16 sm:px-6">
+        {mode === "start" && (
+          <StartScreen
+            savedDraft={savedDraft}
+            onStartNew={handleStartNew}
+            onResume={handleResume}
+            onLoadSample={handleLoadSample}
+            onClearDraft={handleClearDraft}
+          />
+        )}
+
+        {mode === "wizard" && (
+          <>
+            <div className="print:hidden mt-6">
+              <ProgressBar currentIndex={stepIndex} furthestIndex={furthestIndex} onStepClick={goToWizardStep} />
+            </div>
+            <StepShell
+              title={STEP_META[currentStep].title}
+              description={STEP_META[currentStep].description}
+              onBack={stepIndex > 0 ? handleBack : undefined}
+              onNext={handleContinue}
+              onSaveDraft={handleSaveDraft}
+              isLastStep={stepIndex === STEP_ORDER.length - 1}
+              savedJustNow={savedJustNow}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+              <StepRenderer step={currentStep} data={data} onChange={setData} errors={errors} />
+            </StepShell>
+          </>
+        )}
+
+        {mode === "summary" && (
+          <SummaryView data={data} onEditStep={handleEditStep} onStartNew={handleNewFromSummary} />
+        )}
       </main>
-    </div>
+
+      {pendingNewBrief && (
+        <ConfirmDialog
+          title="Start a new briefing?"
+          description="This discards the current briefing saved in this browser. This cannot be undone."
+          confirmLabel="Start new"
+          onConfirm={confirmStartNew}
+          onCancel={() => setPendingNewBrief(false)}
+        />
+      )}
+
+      {pendingClearDraft && (
+        <ConfirmDialog
+          title="Clear saved draft?"
+          description="This removes the briefing saved in this browser's storage. This cannot be undone."
+          confirmLabel="Clear draft"
+          onConfirm={confirmClearDraft}
+          onCancel={() => setPendingClearDraft(false)}
+        />
+      )}
+
+      <Toast toast={toast} onDismiss={dismissToast} />
+    </>
   );
 }

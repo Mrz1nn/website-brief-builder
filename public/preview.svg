@@ -1,0 +1,114 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="preview-title preview-desc">
+  <title id="preview-title">Website Brief Builder preview</title>
+  <desc id="preview-desc">Mockup of a step-by-step briefing wizard on the left and a final summary document on the right, connected by an arrow.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#131318"/>
+      <stop offset="1" stop-color="#1a1a22"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9089f7"/>
+      <stop offset="1" stop-color="#6f66e0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- header -->
+  <g>
+    <rect x="56" y="44" width="40" height="40" rx="12" fill="#9089f7"/>
+    <path d="M68 64 l6 6 12 -14" stroke="#14121f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="108" y="71" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#f1f1f4">Website Brief Builder</text>
+  </g>
+  <text x="56" y="104" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#9a9ba6">A guided questionnaire that turns answers into a ready-to-print website brief</text>
+
+  <!-- step progress pills -->
+  <g font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600">
+    <rect x="56" y="132" width="1088" height="6" rx="3" fill="#33343f"/>
+    <rect x="56" y="132" width="440" height="6" rx="3" fill="url(#accentGrad)"/>
+
+    <g>
+      <rect x="56" y="152" width="122" height="30" rx="15" fill="#2a2650"/>
+      <text x="117" y="171" text-anchor="middle" fill="#9089f7">1 Business</text>
+    </g>
+    <g>
+      <rect x="186" y="152" width="100" height="30" rx="15" fill="#2a2650"/>
+      <text x="236" y="171" text-anchor="middle" fill="#9089f7">2 Goal</text>
+    </g>
+    <g>
+      <rect x="294" y="152" width="128" height="30" rx="15" fill="#2a2650"/>
+      <text x="358" y="171" text-anchor="middle" fill="#9089f7">3 Audience</text>
+    </g>
+    <g>
+      <rect x="430" y="152" width="108" height="30" rx="15" fill="#24252d" stroke="#33343f"/>
+      <text x="484" y="171" text-anchor="middle" fill="#9a9ba6">4 Pages</text>
+    </g>
+    <g>
+      <rect x="546" y="152" width="118" height="30" rx="15" fill="#24252d" stroke="#33343f"/>
+      <text x="605" y="171" text-anchor="middle" fill="#9a9ba6">5 Identity</text>
+    </g>
+  </g>
+
+  <!-- left card: active wizard step -->
+  <g>
+    <rect x="56" y="208" width="440" height="360" rx="18" fill="#1c1d24" stroke="#33343f"/>
+    <text x="84" y="248" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#f1f1f4">Target audience</text>
+    <text x="84" y="270" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#9a9ba6">Who will be visiting the site?</text>
+
+    <text x="84" y="308" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#f1f1f4">Who is the target audience? *</text>
+    <rect x="84" y="318" width="384" height="60" rx="10" fill="#131318" stroke="#33343f"/>
+    <text x="96" y="344" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#666b76">Coffee enthusiasts who care about</text>
+    <text x="96" y="362" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#666b76">sourcing and roast quality</text>
+
+    <text x="84" y="404" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#f1f1f4">Age range</text>
+    <rect x="84" y="414" width="384" height="36" rx="10" fill="#131318" stroke="#33343f"/>
+    <text x="96" y="437" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#666b76">25 to 45</text>
+
+    <text x="84" y="480" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#f1f1f4">Pain points</text>
+    <rect x="84" y="490" width="384" height="44" rx="10" fill="#131318" stroke="#33343f"/>
+
+    <rect x="84" y="546" width="150" height="34" rx="9" fill="url(#accentGrad)"/>
+    <text x="159" y="568" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#14121f">Continue</text>
+  </g>
+
+  <!-- arrow -->
+  <g stroke="#4c4a63" stroke-width="3" fill="none">
+    <path d="M520 388 h96" stroke-linecap="round"/>
+    <path d="M596 374 l24 14 -24 14" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- right card: final summary -->
+  <g>
+    <rect x="644" y="208" width="500" height="360" rx="18" fill="#1c1d24" stroke="#33343f"/>
+    <text x="672" y="248" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#f1f1f4">Brief summary</text>
+    <text x="672" y="270" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#9a9ba6">Northbound Coffee Roasters</text>
+
+    <g font-family="Arial, Helvetica, sans-serif" font-size="12">
+      <text x="672" y="304" font-weight="700" fill="#9089f7">BUSINESS</text>
+      <text x="672" y="324" fill="#9a9ba6">Segment</text>
+      <text x="836" y="324" fill="#f1f1f4">Specialty coffee roastery</text>
+      <line x1="672" y1="336" x2="1116" y2="336" stroke="#33343f"/>
+
+      <text x="672" y="360" font-weight="700" fill="#9089f7">WEBSITE GOAL</text>
+      <text x="672" y="380" fill="#9a9ba6">Primary goal</text>
+      <text x="836" y="380" fill="#f1f1f4">Sell products</text>
+      <line x1="672" y1="392" x2="1116" y2="392" stroke="#33343f"/>
+
+      <text x="672" y="416" font-weight="700" fill="#9089f7">PAGES</text>
+      <text x="672" y="436" fill="#9a9ba6">Selected pages</text>
+      <text x="836" y="436" fill="#f1f1f4">Home, About, Products, Blog</text>
+      <line x1="672" y1="448" x2="1116" y2="448" stroke="#33343f"/>
+
+      <text x="672" y="472" font-weight="700" fill="#9089f7">TIMELINE</text>
+      <text x="672" y="492" fill="#9a9ba6">Target launch</text>
+      <text x="836" y="492" fill="#f1f1f4">In 3 months</text>
+    </g>
+
+    <rect x="672" y="518" width="120" height="32" rx="8" fill="#24252d" stroke="#33343f"/>
+    <text x="732" y="539" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#f1f1f4">Copy brief</text>
+
+    <rect x="804" y="518" width="150" height="32" rx="8" fill="#24252d" stroke="#33343f"/>
+    <text x="879" y="539" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#f1f1f4">Print / Save as PDF</text>
+  </g>
+</svg>

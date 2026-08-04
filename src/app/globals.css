@@ -1,26 +1,264 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f7f9;
+  --surface: #ffffff;
+  --surface-alt: #eef0f4;
+  --border: #e3e5ea;
+  --foreground: #1a1b1f;
+  --muted: #666b76;
+  --accent: #4338ca;
+  --accent-foreground: #ffffff;
+  --accent-soft: #ece9fe;
+  --danger: #c0432f;
+  --danger-soft: #fbe9e6;
+  --graphite: #1f2024;
+  --shadow-color: 240 15% 60%;
+}
+
+:root.dark {
+  --background: #131318;
+  --surface: #1c1d24;
+  --surface-alt: #24252d;
+  --border: #33343f;
+  --foreground: #f1f1f4;
+  --muted: #9a9ba6;
+  --accent: #9089f7;
+  --accent-foreground: #14121f;
+  --accent-soft: #2a2650;
+  --danger: #e0685a;
+  --danger-soft: #3a2422;
+  --graphite: #0d0d10;
+  --shadow-color: 240 30% 4%;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-border: var(--border);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-graphite: var(--graphite);
+  --font-sans: var(--font-inter);
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-scale-in: scale-in 0.15s ease-out;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/*
+  Component classes live in @layer components so Tailwind always places them
+  before the utilities layer in the generated stylesheet. Without this layer,
+  plain classes like `.card` (defined after `@import "tailwindcss"` in source
+  order) tie in specificity with single-class utilities and win the cascade
+  purely by appearing later, silently overriding utility overrides.
+*/
+@layer components {
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.06);
+  }
+
+  .input {
+    width: 100%;
+    border-radius: 0.6rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--foreground);
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .input[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+
+  .btn-accent {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+
+  .btn-accent:hover {
+    filter: brightness(1.08);
+  }
+
+  .btn-accent:active {
+    transform: scale(0.98);
+  }
+
+  .btn-accent:disabled {
+    opacity: 0.5;
+    filter: none;
+    cursor: not-allowed;
+  }
+
+  .option-card {
+    text-align: left;
+    border-radius: 0.85rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0.75rem 0.9rem;
+    color: var(--foreground);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .option-card:hover {
+    border-color: var(--accent);
+  }
+
+  .option-card-selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .chip {
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--foreground);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.825rem;
+    font-weight: 500;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .chip:hover {
+    border-color: var(--accent);
+  }
+
+  .chip-selected {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .priority-pill {
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    padding: 0.25rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .priority-pill-selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .step-pill {
+    border-radius: 999px;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .step-pill:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .step-pill:not(:disabled):hover {
+    color: var(--foreground);
+  }
+
+  .step-pill-current {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .step-pill-done {
+    color: var(--foreground);
+  }
+
+  .scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+
+  body {
+    background: #ffffff;
+    color: #111111;
+  }
+
+  .card {
+    box-shadow: none;
+    border-color: #d8d8d8;
+    break-inside: avoid;
+  }
 }
